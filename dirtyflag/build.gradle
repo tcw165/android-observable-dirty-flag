@@ -26,6 +26,8 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
+    api rootProject.ext.dep.supportAnnotations
+
     // Rx-Java.
     api rootProject.ext.dep.rxJava
     // Kotlin

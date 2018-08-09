@@ -52,6 +52,9 @@ dependencies {
     // Rx-Permissions.
     implementation rootProject.ext.dep.rxPermissions
 
+    // My Libraries.
+    implementation project(path: ':dirtyflag')
+
     // Unit tests.
     testImplementation rootProject.ext.dep.testJunit
     testImplementation rootProject.ext.dep.testMockito
