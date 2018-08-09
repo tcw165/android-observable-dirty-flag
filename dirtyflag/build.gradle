@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Rx-Java.
+    api rootProject.ext.dep.rxJava
+    // Kotlin
+    api rootProject.ext.dep.kotlinStdlibJdk7
+
+    // Unit tests.
+    testApi rootProject.ext.dep.testJunit
+    testApi rootProject.ext.dep.testMockito
+
+    // Instrumentation tests.
+    androidTestApi rootProject.ext.dep.testRunner
+    androidTestApi rootProject.ext.dep.testEspressoCore
+}
+
+// Deployment script.
+apply from: 'deploy.gradle'

@@ -1,0 +1,13 @@
+.DS_Store
+.gradle
+**/merged_proguard*
+**/*.iml
+**/local.properties
+**/.idea/**
+**/build
+**/release
+**/lib-distribution
+**/.externalNativeBuild
+**/captures
+**/report.xml
+**crashlytics**
