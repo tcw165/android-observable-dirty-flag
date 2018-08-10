@@ -73,7 +73,9 @@ class DirtyFlagTest {
         tester.markDirty(ExampleDirtyFlag.DIRTY_HASH)
         tester.markNotDirty(ExampleDirtyFlag.DIRTY_HASH)
 
-        testObserver.assertValues(DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
+        testObserver.assertValues(DirtyEvent(flag = 0,
+                                             changedType = DirtyFlag.NO_CHANGE),
+                                  DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
                                              changedType = ExampleDirtyFlag.DIRTY_HASH),
                                   DirtyEvent(flag = 0,
                                              changedType = ExampleDirtyFlag.DIRTY_HASH))
@@ -110,7 +112,9 @@ class DirtyFlagTest {
         tester.markNotDirty(ExampleDirtyFlag.DIRTY_HASH)
         testScheduler.triggerActions()
 
-        testObserver.assertValues(DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
+        testObserver.assertValues(DirtyEvent(flag = 0,
+                                             changedType = DirtyFlag.NO_CHANGE),
+                                  DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
                                              changedType = ExampleDirtyFlag.DIRTY_HASH),
                                   DirtyEvent(flag = 0,
                                              changedType = ExampleDirtyFlag.DIRTY_HASH))
