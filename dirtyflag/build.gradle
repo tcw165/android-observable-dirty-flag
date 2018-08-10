@@ -34,12 +34,12 @@ dependencies {
     api rootProject.ext.dep.kotlinStdlibJdk7
 
     // Unit tests.
-    testApi rootProject.ext.dep.testJunit
-    testApi rootProject.ext.dep.testMockito
+    testImplementation rootProject.ext.dep.testJunit
+    testImplementation rootProject.ext.dep.testMockito
 
     // Instrumentation tests.
-    androidTestApi rootProject.ext.dep.testRunner
-    androidTestApi rootProject.ext.dep.testEspressoCore
+    androidTestImplementation rootProject.ext.dep.testRunner
+    androidTestImplementation rootProject.ext.dep.testEspressoCore
 }
 
 // Deployment script.
