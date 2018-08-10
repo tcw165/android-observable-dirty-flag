@@ -69,7 +69,12 @@ open class DirtyFlag(protected open var flag: Int = 0) {
         }
     }
 
-    protected val mFlagSignal = BehaviorSubject.create<DirtyEvent>().toSerialized()
+    protected val mFlagSignal by lazy {
+        BehaviorSubject
+            .createDefault(DirtyEvent(flag = this.flag,
+                                      changedType = NO_CHANGE))
+            .toSerialized()
+    }
 
     /**
      * Observe the update of the flag, where you could assign the particular types
@@ -95,6 +100,9 @@ open class DirtyFlag(protected open var flag: Int = 0) {
     }
 
     companion object {
+
+        @JvmStatic
+        val NO_CHANGE = 0
 
         /**
          * A util method for checking if the types in flag are dirty or not.
