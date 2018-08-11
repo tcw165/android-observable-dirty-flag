@@ -30,7 +30,7 @@ jobs:
       
       - run:
          name: Run Unit Tests
-         command: bundle exec fastlane test
+         command: bundle exec fastlane android test
       
       - store_artifacts:
           path: dirtyflag/build/reports
@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Build library & delopy to Bintray/JCenter
           command: |
-            bundle exec fastlane smart_deploy
+            bundle exec fastlane android smart_deploy
       
       - store_artifacts:
           path: dirtyflag/build/outputs/aar/

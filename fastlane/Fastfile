@@ -18,6 +18,7 @@ default_platform(:android)
 platform :android do
   desc "Runs all the tests"
   lane :test do
+    request = get_request_from_git
     if request.empty?
       next
     else
@@ -36,11 +37,11 @@ platform :android do
       gradle(task: "dirtyflag:test",
              build_type: 'Debug')
       # ProGuard test
-      custom_gradle(task: 'dirtyflag:assemble',
-                    build_type: 'Debug',
-                    properties: {
-                      'testProguard' => 'true',
-                    })
+      gradle(task: 'dirtyflag:assemble',
+             build_type: 'Debug',
+             properties: {
+               'testProguard' => 'true',
+             })
     end
   end
 
