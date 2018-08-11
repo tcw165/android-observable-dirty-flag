@@ -1,6 +1,9 @@
 Observable DirtyFlag
 ===
 
+[![CircleCI](https://circleci.com/gh/boyw165/android-observable-dirty-flag.svg?style=svg)](https://circleci.com/gh/boyw165/android-observable-dirty-flag)
+[![Download](https://api.bintray.com/packages/boyw165/android/observable-dirty-flag/images/download.svg)](https://bintray.com/boyw165/android/observable-dirty-flag/_latestVersion)
+
 A generic dirty flag which has observable output with isolated flag environment.
 
 Gradle
@@ -46,14 +49,14 @@ mDirtyFlag
     .onUpdate(DIRTY_A, DIRTY_B)
     .subscribe { event ->
         println("observer #1 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
-	}
+    }
 
 // Observer #2 cares DIRTY_C
 mDirtyFlag
     .onUpdate(DIRTY_C)
     .subscribe { event ->
         println("observer #2 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
-	}	
+    }
 
 // Some where in the code
 mDirtyFlag.markDirty(DIRTY_A, DIRTY_B)
