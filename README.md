@@ -10,10 +10,10 @@ Add this into your dependencies block.
 
 ```
 // For gradle < 3.0
-compile 'io.useful.dirtyflag:dirty-flag:1.1.0'
+compile 'io.useful.dirtyflag:dirty-flag:1.1.1'
 
 // For gradle >= 3.0, use "api" or "implementation"
-implementation 'io.useful.dirtyflag:dirty-flag:1.1.0'
+implementation 'io.useful.dirtyflag:dirty-flag:1.1.1'
 ```
 
 If you cannot find the package, add this to your gradle repository
@@ -32,9 +32,9 @@ The observable dirty flag is fairly simple, where there are `markDirty`, `markNo
 ```
 // Flag bit
 companion oject {
-	const val DIRTY_A = 1.shl(0)
-	const val DIRTY_B = 1.shl(1)
-	const val DIRTY_C = 1.shl(2)
+    const val DIRTY_A = 1.shl(0)
+    const val DIRTY_B = 1.shl(1)
+    const val DIRTY_C = 1.shl(2)
 }
 ```
 
@@ -43,16 +43,16 @@ private val mDirtyFlag = DirtyFlag(0)
 
 // Observer #1 cares DIRTY_A and DIRTY_B only
 mDirtyFlag
-	.onUpdate(DIRTY_A, DIRTY_B)
-	.subscribe { event ->
-		println("observer #1 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
+    .onUpdate(DIRTY_A, DIRTY_B)
+    .subscribe { event ->
+        println("observer #1 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
 	}
 
 // Observer #2 cares DIRTY_C
 mDirtyFlag
-	.onUpdate(DIRTY_C)
-	.subscribe { event ->
-		println("observer #2 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
+    .onUpdate(DIRTY_C)
+    .subscribe { event ->
+        println("observer #2 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
 	}	
 
 // Some where in the code
@@ -88,7 +88,7 @@ If you want to constraint the `Int` types, you could use `@IntDef` annotation. F
 
 ```
 class ExampleDirtyFlag(@Type override var flag: Int)
-	: DirtyFlag(flag) {
+    : DirtyFlag(flag) {
 
     @Retention(AnnotationRetention.SOURCE)
     @IntDef(DIRTY_A,
