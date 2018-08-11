@@ -20,8 +20,8 @@ android {
         applicationId "io.useful.dirtyflag.demo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode project.hasProperty('versionCode') ? project.property('versionCode').toInteger(): 999999
+        versionName project.findProperty('versionName') ?: '99.99.99-dev'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

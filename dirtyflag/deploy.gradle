@@ -3,7 +3,7 @@ apply plugin: 'com.novoda.bintray-release'
 ext {
     library_artifactId = 'dirty-flag'
     library_groupId = 'io.useful.dirtyflag'
-    library_version = '1.1.0'
+    library_version = android.defaultConfig.versionName
     library_desc = 'A generic dirty flag which has observable output with isolated flag environment'
 
     site_url = 'https://github.com/boyw165/android-observable-dirty-flag'
