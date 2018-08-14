@@ -62,7 +62,7 @@ open class DirtyFlag(protected open var flag: Int = 0) {
     /**
      * To know the given types are all dirty or not.
      */
-    fun isDirty(vararg types: Int): Boolean {
+    open fun isDirty(vararg types: Int): Boolean {
         synchronized(mLock) {
             return DirtyFlag.isDirty(flag = this.flag,
                                      types = *types)
