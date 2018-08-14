@@ -13,10 +13,10 @@ Add this into your dependencies block.
 
 ```
 // For gradle < 3.0
-compile 'io.useful.dirtyflag:dirty-flag:1.1.1'
+compile 'io.useful.dirtyflag:dirty-flag:1.1.2'
 
 // For gradle >= 3.0, use "api" or "implementation"
-implementation 'io.useful.dirtyflag:dirty-flag:1.1.1'
+implementation 'io.useful.dirtyflag:dirty-flag:1.1.2'
 ```
 
 If you cannot find the package, add this to your gradle repository
