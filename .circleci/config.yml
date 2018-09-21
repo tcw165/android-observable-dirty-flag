@@ -1,49 +1,95 @@
 version: 2
+
 jobs:
-  build:
-    working_directory: ~/code
+  build-job:
+    working_directory: ~/project
+
     docker:
-      # Specify the version you desire here
-      - image: boyw165/docker-android
-    
+      - image: circleci/android:api-27-alpha
+
     environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
-      TERM: xterm
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms256m -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
     steps:
       - checkout
-      - run:
-          name: Git submodule
-          command: git submodule update --init --recursive
-      
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}-{{ checksum "dependencies.gradle" }}
-      
-      - run:
-          name: Download Dependencies
-          command: |
-            unset ANDROID_NDK_HOME
-            bundle install
-      
-      - run:
-         name: Run Unit Tests
-         command: bundle exec fastlane android test
-      
-      - store_artifacts:
-          path: dirtyflag/build/reports
-          destination: reports
 
-      - store_test_results:
-          path: dirtyflag/build/test-results
-      
+      - restore_cache:
+          key: project-{{ checksum "build.gradle" }}-{{ checksum "dependencies.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "dependencies.gradle" }}
+
       - run:
-          name: Build library & delopy to Bintray/JCenter
-          command: |
-            bundle exec fastlane android smart_deploy
-      
+          name: Download dependencies
+          command: ./gradlew androidDependencies --stacktrace
+
+      - save_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "dependencies.gradle" }}
+          paths:
+            - ~/android
+
+      - run:
+          name: Run unit test
+          command: ./gradlew testDebugUnitTest -PtestProguard=true --stacktrace
+
       - store_artifacts:
-          path: dirtyflag/build/outputs/aar/
-          destination: aar
+          path: dirtyflag/build/outputs/
+          destination: outputs/
+
+      - save_cache:
+          key: project-{{ checksum "build.gradle" }}-{{ checksum "dependencies.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - "~/.gradle/4.6"
+            - "~/.gradle/wrapper/dists/gradle-4.6-all"
+            - "~/.gradle/caches/modules-2"
+            - "~/.gradle/buildOutputCleanup"
+            - "~/.m2"
+
+  deploy-job:
+    working_directory: ~/project
+
+    docker:
+      - image: circleci/android:api-27-alpha
+
+    environment:
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms256m -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+
+    steps:
+      - checkout
+
+      - run:
+          name: Download dependencies
+          command: ./gradlew androidDependencies --stacktrace
+
+      - run:
+          name: Run unit test
+          command: ./gradlew testReleaseUnitTest --stacktrace
+
+      - run:
+          name: Build artifact
+          command: ./gradlew build --stacktrace
+
+#      - run:
+#          name: Publish to Github
+#          command: ./gradlew githubRelease
+
+      - run:
+          name: Publish to JCenter
+          command: ./gradlew dirtyflag::bintrayUpload --stacktrace
+
+      - store_artifacts:
+          path: dirtyflag/build/outputs/
+          destination: outputs/
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build-job:
+          filters:
+            branches:
+              ignore: master
+      - deploy-job:
+          filters:
+            branches:
+              only: master

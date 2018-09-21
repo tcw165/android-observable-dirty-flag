@@ -1,4 +1,4 @@
-// Copyright Jun 2018-present useful.io
+// Copyright Jun 2018-present TAI-CHUN, WANG
 //
 // Author: boyw165@gmail.com
 //
@@ -31,17 +31,17 @@ import io.reactivex.subjects.BehaviorSubject
  */
 open class DirtyFlag(protected open var flag: Int = 0) {
 
-    private val mLock = Any()
+    private val lock = Any()
 
     /**
      * Mark the given types dirty.
      */
     open fun markDirty(vararg types: Int) {
-        synchronized(mLock) {
+        synchronized(lock) {
             types.forEach { type ->
                 flag = flag.or(type)
-                mFlagSignal.onNext(DirtyEvent(flag = flag,
-                                              changedType = type))
+                flagSignal.onNext(DirtyEvent(flag = flag,
+                                             changedType = type))
             }
         }
     }
@@ -50,11 +50,11 @@ open class DirtyFlag(protected open var flag: Int = 0) {
      * Mark the given types not dirty.
      */
     open fun markNotDirty(vararg types: Int) {
-        synchronized(mLock) {
+        synchronized(lock) {
             types.forEach { type ->
                 flag = flag.and(type.inv())
-                mFlagSignal.onNext(DirtyEvent(flag = flag,
-                                              changedType = type))
+                flagSignal.onNext(DirtyEvent(flag = flag,
+                                             changedType = type))
             }
         }
     }
@@ -63,13 +63,13 @@ open class DirtyFlag(protected open var flag: Int = 0) {
      * To know the given types are all dirty or not.
      */
     open fun isDirty(vararg types: Int): Boolean {
-        synchronized(mLock) {
+        synchronized(lock) {
             return DirtyFlag.isDirty(flag = this.flag,
                                      types = *types)
         }
     }
 
-    protected val mFlagSignal by lazy {
+    private val flagSignal by lazy {
         BehaviorSubject
             .createDefault(DirtyEvent(flag = this.flag,
                                       changedType = NO_CHANGE))
@@ -80,7 +80,7 @@ open class DirtyFlag(protected open var flag: Int = 0) {
      * Observe the update of the flag, where you could assign the particular types
      * and get notified with the changes corresponding the the types.
      */
-    open fun onUpdate(vararg withTypes: Int): Observable<DirtyEvent> {
+    open fun updated(vararg withTypes: Int): Observable<DirtyEvent> {
         return if (withTypes.isNotEmpty()) {
             // Prepare the mask for only showing the cared types to provide the
             // separate flag environment
@@ -91,11 +91,11 @@ open class DirtyFlag(protected open var flag: Int = 0) {
             val filter = Predicate<DirtyEvent> { event ->
                 withTypesArray.contains(event.changedType)
             }
-            mFlagSignal
+            flagSignal
                 .filter(filter)
                 .map { event -> event.copy(flag = event.flag.and(mask)) }
         } else {
-            mFlagSignal
+            flagSignal
         }
     }
 

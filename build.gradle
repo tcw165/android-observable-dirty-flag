@@ -1,7 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-// Dependency.
+// Global environmental variables
+ext.build = [
+    ci : 'true' == System.getenv('CI')
+]
+
+// Dependency
 apply from: rootProject.file('dependencies.gradle')
+// Artifact helper
+apply from: rootProject.file('gradle_scripts/artifact.gradle')
 
 buildscript {
     // Dependency.
@@ -10,6 +17,8 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
@@ -20,10 +29,12 @@ buildscript {
         // in the individual module build.gradle files
 
         // Bintray/jcenter deployment.
-        classpath 'com.novoda:bintray-release:0.8.0'
+        classpath 'com.novoda:bintray-release:0.8.1'
 
-        // Coverage report
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
+        // Github release note helpers
+        classpath 'co.riiid:gradle-github-plugin:0.4.2'
+        classpath 'gradle.plugin.se.bjurr.gitchangelog:git-changelog-gradle-plugin:1.54'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
     }
 }
 
@@ -31,7 +42,10 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url 'https://dl.bintray.com/cblue/android' }
+        maven { url 'https://dl.bintray.com/boyw165/android' }
     }
 }
 

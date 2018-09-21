@@ -12,11 +12,7 @@ Gradle
 Add this into your dependencies block.
 
 ```
-// For gradle < 3.0
-compile 'io.useful.dirtyflag:dirty-flag:1.1.3'
-
-// For gradle >= 3.0, use "api" or "implementation"
-implementation 'io.useful.dirtyflag:dirty-flag:1.1.3'
+implementation 'io.useful:dirty-flag:x.x.x'
 ```
 
 If you cannot find the package, add this to your gradle repository
@@ -30,7 +26,7 @@ maven {
 Usage
 ---
 
-The observable dirty flag is fairly simple, where there are `markDirty`, `markNotDirty`, and `onUpdate()` functions. For example:
+The observable dirty flag is fairly simple, where there are `markDirty`, `markNotDirty`, and `updated` methods. For example:
 
 ```
 // Flag bit
@@ -42,29 +38,29 @@ companion oject {
 ```
 
 ```
-private val mDirtyFlag = DirtyFlag(0)
+private val dirtyFlag = DirtyFlag(0)
 
 // Observer #1 cares DIRTY_A and DIRTY_B only
-mDirtyFlag
-    .onUpdate(DIRTY_A, DIRTY_B)
+dirtyFlag
+    .updated(DIRTY_A, DIRTY_B)
     .subscribe { event ->
         println("observer #1 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
     }
 
 // Observer #2 cares DIRTY_C
-mDirtyFlag
+dirtyFlag
     .onUpdate(DIRTY_C)
     .subscribe { event ->
         println("observer #2 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
     }
 
 // Mark dirty
-mDirtyFlag.markDirty(DIRTY_A, DIRTY_B)
-mDirtyFlag.markDirty(DIRTY_C)
+dirtyFlag.markDirty(DIRTY_A, DIRTY_B)
+dirtyFlag.markDirty(DIRTY_C)
 
 // Mark not dirty
-mDirtyFlag.markNotDirty(DIRTY_B)
-mDirtyFlag.markNotDirty(DIRTY_C)
+dirtyFlag.markNotDirty(DIRTY_B)
+dirtyFlag.markNotDirty(DIRTY_C)
 ```
 
 Then you'll get the print log like:

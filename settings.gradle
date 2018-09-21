@@ -1,1 +1,1 @@
-include ':app', ':dirtyflag'
+include ':dirtyflag'
