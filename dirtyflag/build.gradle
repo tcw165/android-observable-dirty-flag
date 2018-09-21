@@ -40,6 +40,8 @@ dependencies {
 
     // Rx-Java.
     api rootProject.ext.dep.rxJava
+    api rootProject.ext.dep.rxRelay
+
     // Kotlin
     api rootProject.ext.dep.kotlinStdlibJdk7
 

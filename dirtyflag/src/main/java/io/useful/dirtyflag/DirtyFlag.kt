@@ -22,16 +22,20 @@
 
 package io.useful.dirtyflag
 
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.functions.Predicate
-import io.reactivex.subjects.BehaviorSubject
 
 /**
  * A thread-safe and observable dirty flag.
  */
-open class DirtyFlag(protected open var flag: Int = 0) {
+open class DirtyFlag(@Volatile protected open var flag: Int = 0) {
 
     private val lock = Any()
+
+    private val flagSignal = PublishRelay
+        .create<DirtyEvent>()
+        .toSerialized()
 
     /**
      * Mark the given types dirty.
@@ -40,7 +44,7 @@ open class DirtyFlag(protected open var flag: Int = 0) {
         synchronized(lock) {
             types.forEach { type ->
                 flag = flag.or(type)
-                flagSignal.onNext(DirtyEvent(flag = flag,
+                flagSignal.accept(DirtyEvent(flag = flag,
                                              changedType = type))
             }
         }
@@ -53,7 +57,7 @@ open class DirtyFlag(protected open var flag: Int = 0) {
         synchronized(lock) {
             types.forEach { type ->
                 flag = flag.and(type.inv())
-                flagSignal.onNext(DirtyEvent(flag = flag,
+                flagSignal.accept(DirtyEvent(flag = flag,
                                              changedType = type))
             }
         }
@@ -67,13 +71,6 @@ open class DirtyFlag(protected open var flag: Int = 0) {
             return DirtyFlag.isDirty(flag = this.flag,
                                      types = *types)
         }
-    }
-
-    private val flagSignal by lazy {
-        BehaviorSubject
-            .createDefault(DirtyEvent(flag = this.flag,
-                                      changedType = NO_CHANGE))
-            .toSerialized()
     }
 
     /**
@@ -100,9 +97,6 @@ open class DirtyFlag(protected open var flag: Int = 0) {
     }
 
     companion object {
-
-        @JvmStatic
-        val NO_CHANGE = 0
 
         /**
          * A util method for checking if the types in flag are dirty or not.

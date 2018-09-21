@@ -35,32 +35,30 @@ class DirtyFlagTest {
     }
 
     @Test
-    fun dirtyOther() {
+    fun `dirty path, should see hash not dirty`() {
         val tester = ExampleDirtyFlag(flag = ExampleDirtyFlag.DIRTY_PATH)
 
         Assert.assertFalse(tester.isDirty(ExampleDirtyFlag.DIRTY_HASH))
     }
 
     @Test
-    fun dirtyObservable() {
-        val tester = ExampleDirtyFlag(flag = 0)
-        val testObserver = tester
+    fun `dirty observation`() {
+        val candidate = ExampleDirtyFlag(flag = 0)
+        val tester = candidate
             .updated()
             .test()
 
-        tester.markDirty(ExampleDirtyFlag.DIRTY_HASH)
-        tester.markNotDirty(ExampleDirtyFlag.DIRTY_HASH)
+        candidate.markDirty(ExampleDirtyFlag.DIRTY_HASH)
+        candidate.markNotDirty(ExampleDirtyFlag.DIRTY_HASH)
 
-        testObserver.assertValues(DirtyEvent(flag = 0,
-                                             changedType = DirtyFlag.NO_CHANGE),
-                                  DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
-                                             changedType = ExampleDirtyFlag.DIRTY_HASH),
-                                  DirtyEvent(flag = 0,
-                                             changedType = ExampleDirtyFlag.DIRTY_HASH))
+        tester.assertValues(DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
+                                       changedType = ExampleDirtyFlag.DIRTY_HASH),
+                            DirtyEvent(flag = 0,
+                                       changedType = ExampleDirtyFlag.DIRTY_HASH))
     }
 
     @Test
-    fun dirtyObservableByTypes() {
+    fun `dirty observation by types`() {
         val tester = ExampleDirtyFlag(flag = 0)
         val testObserver = tester
             .updated(ExampleDirtyFlag.DIRTY_HASH,
@@ -78,7 +76,7 @@ class DirtyFlagTest {
     }
 
     @Test
-    fun dirtyAsyncObservable() {
+    fun `async dirty observation`() {
         val tester = ExampleDirtyFlag(flag = 0)
         val testScheduler = TestScheduler()
         val testObserver = tester
@@ -90,9 +88,7 @@ class DirtyFlagTest {
         tester.markNotDirty(ExampleDirtyFlag.DIRTY_HASH)
         testScheduler.triggerActions()
 
-        testObserver.assertValues(DirtyEvent(flag = 0,
-                                             changedType = DirtyFlag.NO_CHANGE),
-                                  DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
+        testObserver.assertValues(DirtyEvent(flag = ExampleDirtyFlag.DIRTY_HASH,
                                              changedType = ExampleDirtyFlag.DIRTY_HASH),
                                   DirtyEvent(flag = 0,
                                              changedType = ExampleDirtyFlag.DIRTY_HASH))

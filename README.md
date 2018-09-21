@@ -49,7 +49,7 @@ dirtyFlag
 
 // Observer #2 cares DIRTY_C
 dirtyFlag
-    .onUpdate(DIRTY_C)
+    .updated(DIRTY_C)
     .subscribe { event ->
         println("observer #2 gets type, ${event.changedType}, updated and flag snapshot is ${event.flag}")
     }
@@ -110,8 +110,8 @@ class ExampleDirtyFlag(@Type override var flag: Int)
         super.markNotDirty(*types)
     }
 
-    override fun onUpdate(@Type vararg withTypes: Int): Observable<DirtyEvent> {
-        return super.onUpdate(*withTypes)
+    override fun updated(@Type vararg withTypes: Int): Observable<DirtyEvent> {
+        return super.updated(*withTypes)
     }
 }
 ```
